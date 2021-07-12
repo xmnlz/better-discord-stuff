@@ -3,8 +3,8 @@
  * @version 0.0.1
  * @authorLink https://github.com/eternal-hatred
  * @website https://eternal-hatred.github.io/eternal
- * @updateUrl
- * @source
+ * @updateUrl https://raw.githubusercontent.com/eternal-hatred/BetterDiscordStuff/main/UserVoiceShow/UserVoiceShow.plugin.js?token=APHRZTGQRHPZ34ASR66MFRLA5RQQ6
+ * @source https://github.com/eternal-hatred/BetterDiscordStuff/edit/main/UserVoiceShow/UserVoiceShow.plugin.js
  */
 
 const request = require("request");
