@@ -1,10 +1,10 @@
 /**
  * @name UserVoiceShow
- * @version 0.0.1
+ * @version 0.0.2
  * @authorLink https://github.com/eternal-hatred
  * @website https://eternal-hatred.github.io/eternal
  * @updateUrl https://raw.githubusercontent.com/eternal-hatred/BetterDiscordStuff/main/UserVoiceShow/UserVoiceShow.plugin.js?token=APHRZTGQRHPZ34ASR66MFRLA5RQQ6
- * @source https://github.com/eternal-hatred/BetterDiscordStuff/edit/main/UserVoiceShow/UserVoiceShow.plugin.js
+ * @source https://github.com/eternal-hatred/BetterDiscordStuff/tree/main/UserVoiceShow
  */
 
 const request = require("request");
@@ -20,7 +20,7 @@ const config = {
                 discord_id: "3713360440224645238",
             }
         ],
-        version: "0.0.1",
+        version: "0.0.2",
         description: "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
     }
 };
