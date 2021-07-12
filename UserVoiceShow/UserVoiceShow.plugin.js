@@ -3,7 +3,7 @@
  * @version 0.0.2
  * @authorLink https://github.com/eternal-hatred
  * @website https://eternal-hatred.github.io/eternal
- * @updateUrl https://raw.githubusercontent.com/eternal-hatred/BetterDiscordStuff/main/UserVoiceShow/UserVoiceShow.plugin.js?token=APHRZTGQRHPZ34ASR66MFRLA5RQQ6
+ * @updateUrl https://raw.githubusercontent.com/eternal-hatred/BetterDiscordStuff/main/UserVoiceShow/UserVoiceShow.plugin.js
  * @source https://github.com/eternal-hatred/BetterDiscordStuff/tree/main/UserVoiceShow
  */
 
