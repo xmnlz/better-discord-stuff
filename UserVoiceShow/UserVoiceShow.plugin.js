@@ -1,9 +1,8 @@
 /**
  * @name UserVoiceShow
- * @version 0.0.2
+ * @version 0.0.1
  * @authorLink https://github.com/eternal-hatred
  * @website https://eternal-hatred.github.io/eternal
- * @updateUrl https://raw.githubusercontent.com/eternal-hatred/BetterDiscordStuff/main/UserVoiceShow/UserVoiceShow.plugin.js
  * @source https://github.com/eternal-hatred/BetterDiscordStuff/tree/main/UserVoiceShow
  */
 
@@ -20,13 +19,13 @@ const config = {
                 discord_id: "3713360440224645238",
             }
         ],
-        version: "0.0.2",
+        version: "0.0.1",
         description: "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
     }
 };
 
 module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
-    const { DiscordModules, Patcher, WebpackModules, PluginUtilities, Settings } = Library;
+    const { DiscordModules, Patcher, WebpackModules, PluginUtilities, Settings, PluginUpdater } = Library;
     const { React, ChannelActions, ChannelStore, GuildStore, UserStore } = DiscordModules;
     const modules = {
         UserProfileModalHeader: WebpackModules.find(m => m?.default?.displayName === "UserProfileModalHeader"),
@@ -64,6 +63,7 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
         };
 
         initialize(){
+            PluginUpdater.checkForUpdate(config.info.name, config.info.version, 'https://raw.githubusercontent.com/eternal-hatred/BetterDiscordStuff/main/UserVoiceShow/UserVoiceShow.plugin.js')
             this.patchUserPopoutFooter();
             this.pathUserProfileModalHeader();
             PluginUtilities.addStyle("VoiceChannelField", `
