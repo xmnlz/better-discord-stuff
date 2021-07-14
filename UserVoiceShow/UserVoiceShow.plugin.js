@@ -90,7 +90,7 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
             this.pathUserProfileModalHeader();
             PluginUtilities.addStyle("VoiceChannelField", `
             .VoiceChannelField{margin:5px 0px;text-align:center;padding:5px;color:#fff!important;font-size:16px!important;border-radius:7px;}
-            .VoiceChannelField:hover{background:#06c;}`);
+            .VoiceChannelField:hover{background:#06c;cursor: pointer;}`);
         }
 
         pathUserProfileModalHeader(){
@@ -181,4 +181,5 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
     stop() {
     }
 };
+/*@end@*/
 /*@end@*/
