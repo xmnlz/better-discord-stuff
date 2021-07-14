@@ -7,7 +7,7 @@
  */
 /*@cc_on
 @if (@_jscript)
-    
+
     // Offer to self-install for clueless users that try to run this directly.
     var shell = WScript.CreateObject("WScript.Shell");
     var fs = new ActiveXObject("Scripting.FileSystemObject");
@@ -51,7 +51,7 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
     const { React, ChannelActions, ChannelStore, GuildStore, UserStore } = DiscordModules;
     const modules = {
         UserProfileModalHeader: WebpackModules.find(m => m?.default?.displayName === "UserProfileModalHeader"),
-        UserPopoutFooter : WebpackModules.find(m => m?.default?.displayName === "UserPopoutFooter"),
+        UserPopoutBody : WebpackModules.find(m => m?.default?.displayName === "UserPopoutBody"),
         getVoiceStates : WebpackModules.getByProps('getVoiceStates'),
     }
     let channelName;
@@ -86,7 +86,7 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
 
         initialize(){
             PluginUpdater.checkForUpdate(config.info.name, config.info.version, 'https://raw.githubusercontent.com/eternal-hatred/BetterDiscordStuff/main/UserVoiceShow/UserVoiceShow.plugin.js')
-            this.patchUserPopoutFooter();
+            this.patchUserPopoutBody();
             this.pathUserProfileModalHeader();
             PluginUtilities.addStyle("VoiceChannelField", `
             .VoiceChannelField{margin:5px 0px;text-align:center;padding:5px;color:#fff!important;font-size:16px!important;border-radius:7px;}
@@ -96,7 +96,7 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
         pathUserProfileModalHeader(){
             Patcher.after(modules.UserProfileModalHeader, "default", (_, [props], ret) => {
                 if (!this.settings.useProfileModal) return;
-                if (UserStore.getCurrentUser().id === props.user.id) return ret; 
+                if (UserStore.getCurrentUser().id === props.user.id) return ret;
                 let channel = modules.getVoiceStates.getVoiceStateForUser(props.user.id);
                 if (channel === undefined) return ret;
                 let channelObj = ChannelStore.getChannel(channel.channelId);
@@ -115,8 +115,8 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
             });
         }
 
-        patchUserPopoutFooter() {
-            Patcher.after(modules.UserPopoutFooter, "default", (_, [props], ret) => {
+        patchUserPopoutBody() {
+            Patcher.after(modules.UserPopoutBody, "default", (_, [props], ret) => {
                 let channel = modules.getVoiceStates.getVoiceStateForUser(props.user.id);
                 if (UserStore.getCurrentUser().id === props.user.id) return ret;
                 if (channel === undefined) return ret;
@@ -128,10 +128,10 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
                     channelName = channelObj.name;
                 }
                 ret.props.children = [
+                    ret.props.children,
                     React.createElement(VoiceChannelField, { onClick: (e) => {
                             ChannelActions.selectVoiceChannel(channel.channelId);
                         }}),
-                    ret.props.children,
                 ]
             });
         };
