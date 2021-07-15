@@ -95,12 +95,13 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
 
         pathUserProfileModalHeader(){
             Patcher.after(modules.UserProfileModalHeader, "default", (_, [props], ret) => {
+                const _channelName;
                 if (!this.settings.useProfileModal) return;
                 if (UserStore.getCurrentUser().id === props.user.id) return ret;
                 let channel = modules.getVoiceStates.getVoiceStateForUser(props.user.id);
                 if (channel === undefined) return ret;
                 let channelObj = ChannelStore.getChannel(channel.channelId);
-                if (channelObj.name === ""){ channelObj.name = 'Channel has no name' } // This happens when the user is in a voice call.
+                if (channelObj.name === "") return  ret; // This happens when the user is in a voice call.
                 try {
                     channelName = `${GuildStore.getGuild(channelObj.guild_id).name} | ${channelObj.name}`;
                 } catch (error) {
@@ -121,7 +122,7 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
                 if (UserStore.getCurrentUser().id === props.user.id) return ret;
                 if (channel === undefined) return ret;
                 let channelObj = ChannelStore.getChannel(channel.channelId);
-                if (channelObj.name === ""){ channelObj.name = 'Channel has no name' } // This happens when the user is in a voice call.
+                if (channelObj.name === "") return  ret; // This happens when the user is in a voice call.
                 try {
                     channelName = `${GuildStore.getGuild(channelObj.guild_id).name} | ${channelObj.name}`;
                 } catch (error) {
@@ -181,5 +182,4 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
     stop() {
     }
 };
-/*@end@*/
 /*@end@*/
