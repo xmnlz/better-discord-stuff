@@ -95,7 +95,6 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
 
         pathUserProfileModalHeader(){
             Patcher.after(modules.UserProfileModalHeader, "default", (_, [props], ret) => {
-                const _channelName;
                 if (!this.settings.useProfileModal) return;
                 if (UserStore.getCurrentUser().id === props.user.id) return ret;
                 let channel = modules.getVoiceStates.getVoiceStateForUser(props.user.id);
