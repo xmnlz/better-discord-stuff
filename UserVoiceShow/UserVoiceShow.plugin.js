@@ -1,6 +1,6 @@
 /**
  * @name UserVoiceShow
- * @version 0.0.1
+ * @version 0.0.2
  * @authorLink https://github.com/eternal-hatred
  * @website https://eternal-hatred.github.io/eternal
  * @source https://github.com/eternal-hatred/BetterDiscordStuff/tree/main/UserVoiceShow
@@ -41,7 +41,7 @@ const config = {
                 discord_id: "3713360440224645238",
             }
         ],
-        version: "0.0.1",
+        version: "0.0.2",
         description: "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
     }
 };
@@ -52,7 +52,7 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
     const modules = {
         UserProfileModalHeader: WebpackModules.find(m => m?.default?.displayName === "UserProfileModalHeader"),
         UserPopoutBody : WebpackModules.find(m => m?.default?.displayName === "UserPopoutBody"),
-        getVoiceStates : WebpackModules.getByProps('getVoiceStates'),
+        VoiceStates : WebpackModules.getByProps('getVoiceStates'),
     }
     let channelName;
 
@@ -85,6 +85,7 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
         };
 
         initialize(){
+            this.preLoadSetting();
             PluginUpdater.checkForUpdate(config.info.name, config.info.version, 'https://raw.githubusercontent.com/eternal-hatred/BetterDiscordStuff/main/UserVoiceShow/UserVoiceShow.plugin.js')
             this.patchUserPopoutBody();
             this.pathUserProfileModalHeader();
@@ -97,7 +98,7 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
             Patcher.after(modules.UserProfileModalHeader, "default", (_, [props], ret) => {
                 if (!this.settings.useProfileModal) return;
                 if (UserStore.getCurrentUser().id === props.user.id) return ret;
-                let channel = modules.getVoiceStates.getVoiceStateForUser(props.user.id);
+                let channel = modules.VoiceStates.getVoiceStateForUser(props.user.id);
                 if (channel === undefined) return ret;
                 let channelObj = ChannelStore.getChannel(channel.channelId);
                 if (channelObj.name === "") return  ret; // This happens when the user is in a voice call.
@@ -117,7 +118,7 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
 
         patchUserPopoutBody() {
             Patcher.after(modules.UserPopoutBody, "default", (_, [props], ret) => {
-                let channel = modules.getVoiceStates.getVoiceStateForUser(props.user.id);
+                let channel = modules.VoiceStates.getVoiceStateForUser(props.user.id);
                 if (UserStore.getCurrentUser().id === props.user.id) return ret;
                 if (channel === undefined) return ret;
                 let channelObj = ChannelStore.getChannel(channel.channelId);
