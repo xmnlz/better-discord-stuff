@@ -1,2 +1,2 @@
 # BetterDiscordStuff
-All staff 4 BetterDiscord.
+All staff for BetterDiscord.
