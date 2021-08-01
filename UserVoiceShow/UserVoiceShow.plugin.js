@@ -38,7 +38,7 @@ const config = {
         authors: [
             {
                 name: "eternalz",
-                discord_id: "3713360440224645238",
+                discord_id: "339763421404725248",
             }
         ],
         version: "0.0.2",
