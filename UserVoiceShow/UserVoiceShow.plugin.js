@@ -37,7 +37,7 @@ const config = {
         name: "UserVoiceShow",
         authors: [
             {
-                name: "eternalz",
+                name: "eternalzq",
                 discord_id: "339763421404725248",
             }
         ],
