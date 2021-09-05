@@ -1,7 +1,7 @@
 # 🐬 BetterDiscordStuff
-All staff for BetterDiscord
+### All staff for BetterDiscord
 ## 🛸 Link to the plugins
-https://betterdiscord.app/plugin/UserVoiceShow
+### UserVoiceShow : https://betterdiscord.app/plugin/UserVoiceShow
 
 ## 🚀 BetterDisocrd
-https://betterdiscord.app/
+### https://betterdiscord.app/
