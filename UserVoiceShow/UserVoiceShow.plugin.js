@@ -1,6 +1,6 @@
 /**
  * @name UserVoiceShow
- * @version 0.0.2
+ * @version 0.0.3
  * @authorLink https://github.com/eternal-hatred
  * @website https://eternal-hatred.github.io/eternal
  * @source https://github.com/eternal-hatred/BetterDiscordStuff/tree/main/UserVoiceShow
