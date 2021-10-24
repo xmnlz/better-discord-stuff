@@ -41,7 +41,7 @@ const config = {
                 discord_id: "339763421404725248",
             }
         ],
-        version: "0.0.2",
+        version: "0.0.3",
         description: "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
     }
 };
@@ -52,7 +52,7 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
     const modules = {
         UserProfileModalHeader: WebpackModules.find(m => m?.default?.displayName === "UserProfileModalHeader"),
         UserPopoutBody : WebpackModules.find(m => m?.default?.displayName === "UserPopoutBody"),
-        VoiceStates : WebpackModules.getByProps('getVoiceStates'),
+        VoiceStates : WebpackModules.getByProps('getVoiceStateForUser'),
     }
     let channelName;
 
