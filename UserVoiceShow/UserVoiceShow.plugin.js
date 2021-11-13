@@ -2,7 +2,7 @@
  * @name UserVoiceShow
  * @version 0.0.3
  * @authorLink https://github.com/xmnlz
- * @source https://github.com/xmlnz/better-discord-stuff/edit
+ * @source https://github.com/xmlnz/better-discord-stuff
  */
 /*@cc_on
 @if (@_jscript)
@@ -36,7 +36,7 @@ const config = {
         name: "UserVoiceShow",
         authors: [
             {
-                name: "eternalzq",
+                name: "xmlnz",
                 discord_id: "339763421404725248",
             }
         ],
