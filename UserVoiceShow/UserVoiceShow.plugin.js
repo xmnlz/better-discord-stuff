@@ -1,6 +1,6 @@
 /**
  * @name UserVoiceShow
- * @version 0.0.3
+ * @version 0.0.4
  * @authorLink https://github.com/xmnlz
  * @source https://github.com/xmlnz/better-discord-stuff
  */
@@ -40,7 +40,7 @@ const config = {
                 discord_id: "339763421404725248",
             }
         ],
-        version: "0.0.3",
+        version: "0.0.4,
         description: "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
     }
 };
@@ -85,7 +85,7 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
 
         initialize(){
             this.preLoadSetting();
-            PluginUpdater.checkForUpdate(config.info.name, config.info.version, 'https://raw.githubusercontent.com/eternal-hatred/BetterDiscordStuff/main/UserVoiceShow/UserVoiceShow.plugin.js')
+            PluginUpdater.checkForUpdate(config.info.name, config.info.version, 'https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js')
             this.patchUserPopoutBody();
             this.pathUserProfileModalHeader();
             PluginUtilities.addStyle("VoiceChannelField", `
