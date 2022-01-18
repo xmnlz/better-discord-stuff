@@ -1,6 +1,6 @@
 /**
  * @name UserVoiceShow
- * @version 0.0.4
+ * @version 0.0.5
  * @authorLink https://github.com/xmnlz
  * @source https://github.com/xmlnz/better-discord-stuff
  */
@@ -40,7 +40,7 @@ const config = {
                 discord_id: "339763421404725248",
             }
         ],
-        version: "0.0.4,
+        version: "0.0.5",
         description: "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
     }
 };
@@ -106,12 +106,11 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
                 } catch (error) {
                     channelName = channelObj.name;
                 }
-                ret.props.children = [
-                    ret.props.children,
-                    React.createElement(VoiceChannelField, { onClick: (e) => {
-                            ChannelActions.selectVoiceChannel(channel.channelId);
-                        }}),
-                ]
+                ret.props.children[3] = React.createElement(VoiceChannelField, {
+                    onClick: (e) => {
+                        ChannelActions.selectVoiceChannel(channel.channelId);
+                    }
+                })
             });
         }
 
@@ -127,12 +126,11 @@ module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
                 } catch (error) {
                     channelName = channelObj.name;
                 }
-                ret.props.children = [
-                    ret.props.children,
-                    React.createElement(VoiceChannelField, { onClick: (e) => {
-                            ChannelActions.selectVoiceChannel(channel.channelId);
-                        }}),
-                ]
+                ret.props.children.push(React.createElement(VoiceChannelField, {
+                    onClick: (e) => {
+                        ChannelActions.selectVoiceChannel(channel.channelId);
+                    }
+                }))
             });
         };
         getSettingsPanel() {
