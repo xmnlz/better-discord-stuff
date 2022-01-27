@@ -1,6 +1,6 @@
 /**
  * @name UserVoiceShow
- * @version 0.0.5
+ * @version 0.0.6
  * @authorLink https://github.com/xmnlz
  * @source https://github.com/xmlnz/better-discord-stuff
  */
@@ -32,151 +32,226 @@ const fs = require("fs");
 const path = require("path");
 
 const config = {
-    info: {
-        name: "UserVoiceShow",
-        authors: [
-            {
-                name: "xmlnz",
-                discord_id: "339763421404725248",
-            }
-        ],
-        version: "0.0.5",
-        description: "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
-    }
+  info: {
+    name: "UserVoiceShow",
+    authors: [
+      {
+        name: "xmlnz",
+        discord_id: "339763421404725248",
+      },
+    ],
+    version: "0.0.6",
+    description:
+      "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
+  },
 };
 
-module.exports = global.ZeresPluginLibrary ? (([Plugin, Library]) => {
-    const { DiscordModules, Patcher, WebpackModules, PluginUtilities, Settings, PluginUpdater } = Library;
-    const { React, ChannelActions, ChannelStore, GuildStore, UserStore } = DiscordModules;
-    const modules = {
-        UserProfileModalHeader: WebpackModules.find(m => m?.default?.displayName === "UserProfileModalHeader"),
-        UserPopoutBody : WebpackModules.find(m => m?.default?.displayName === "UserPopoutBody"),
-        VoiceStates : WebpackModules.getByProps('getVoiceStateForUser'),
-    }
-    let channelName;
+module.exports = global.ZeresPluginLibrary
+  ? (([Plugin, Library]) => {
+      const {
+        DiscordModules,
+        Patcher,
+        WebpackModules,
+        PluginUtilities,
+        Settings,
+        PluginUpdater,
+      } = Library;
+      const { React, ChannelActions, ChannelStore, GuildStore, UserStore } =
+        DiscordModules;
+      const modules = {
+        UserPopoutBody: WebpackModules.find(
+          (m) => m?.default?.displayName === "UserPopoutBody"
+        ),
+        VoiceStates: WebpackModules.getByProps("getVoiceStateForUser"),
+      };
+      let channelName;
 
-    class VoiceChannelField extends React.Component {
+      class VoiceChannelField extends React.Component {
         constructor(props) {
-            super(props);
-            this.state = {
-                channelName: ''
-            };
+          super(props);
+          this.state = {
+            channelName: "",
+          };
         }
         render() {
-            return React.createElement("div", { className: "VoiceChannelField", onClick: this.props.onClick}, channelName);
+          return React.createElement(
+            "div",
+            { className: "VoiceChannelField", onClick: this.props.onClick },
+            channelName
+          );
         }
-    }
-    class plugin extends Plugin {
+      }
+      class plugin extends Plugin {
         constructor() {
-            super();
-            this.settings = {
-                useProfileModal: false,
-            }
-        };
+          super();
+          this.settings = {
+            useProfileModal: false,
+          };
+        }
 
         onStart() {
-            this.initialize();
-        };
-
-        onStop() {
-            Patcher.unpatchAll();
-            PluginUtilities.removeStyle("VoiceChannelField");
-        };
-
-        initialize(){
-            this.preLoadSetting();
-            PluginUpdater.checkForUpdate(config.info.name, config.info.version, 'https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js')
-            this.patchUserPopoutBody();
-            this.pathUserProfileModalHeader();
-            PluginUtilities.addStyle("VoiceChannelField", `
-            .VoiceChannelField{margin:5px 0px;text-align:center;padding:5px;color:#fff!important;font-size:16px!important;border-radius:7px;}
-            .VoiceChannelField:hover{background:#06c;cursor: pointer;}`);
+          this.initialize();
         }
 
-        pathUserProfileModalHeader(){
-            Patcher.after(modules.UserProfileModalHeader, "default", (_, [props], ret) => {
-                if (!this.settings.useProfileModal) return;
-                if (UserStore.getCurrentUser().id === props.user.id) return ret;
-                let channel = modules.VoiceStates.getVoiceStateForUser(props.user.id);
-                if (channel === undefined) return ret;
-                let channelObj = ChannelStore.getChannel(channel.channelId);
-                if (channelObj.name === "") return  ret; // This happens when the user is in a voice call.
-                try {
-                    channelName = `${GuildStore.getGuild(channelObj.guild_id).name} | ${channelObj.name}`;
-                } catch (error) {
-                    channelName = channelObj.name;
-                }
-                ret.props.children[3] = React.createElement(VoiceChannelField, {
-                    onClick: (e) => {
-                        ChannelActions.selectVoiceChannel(channel.channelId);
-                    }
-                })
+        onStop() {
+          Patcher.unpatchAll();
+          PluginUtilities.removeStyle("VoiceChannelField");
+        }
+
+        initialize() {
+          this.preLoadSetting();
+          PluginUpdater.checkForUpdate(
+            config.info.name,
+            config.info.version,
+            "https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"
+          );
+          this.patchUserPopoutBody();
+          (async () => {
+            await this.pathUserProfileModalHeader();
+          })();
+
+          PluginUtilities.addStyle(
+            "VoiceChannelField",
+            `
+            .VoiceChannelField{margin:5px 0px;text-align:center;padding:5px;color:#fff!important;font-size:16px!important;border-radius:7px;}
+            .VoiceChannelField:hover{background:#06c;cursor: pointer;}`
+          );
+        }
+
+        async pathUserProfileModalHeader() {
+          const UserProfileModalHeader = await new Promise((resolve) => {
+            const cached = WebpackModules.getModule(
+              (m) =>
+                m &&
+                m.default &&
+                m.default.displayName === "UserProfileModalHeader"
+            );
+            if (cached) return resolve(cached);
+            const unsubscribe = WebpackModules.addListener((module) => {
+              if (
+                !module.default ||
+                module.default.displayName !== "UserProfileModalHeader"
+              )
+                return;
+              unsubscribe();
+              resolve(module);
             });
+          });
+          Patcher.after(
+            UserProfileModalHeader,
+            "default",
+            (_, [props], ret) => {
+              if (!this.settings.useProfileModal) return;
+              if (UserStore.getCurrentUser().id === props.user.id) return ret;
+              let channel = modules.VoiceStates.getVoiceStateForUser(
+                props.user.id
+              );
+              if (channel === undefined) return ret;
+              let channelObj = ChannelStore.getChannel(channel.channelId);
+              if (channelObj.name === "") return ret; // This happens when the user is in a voice call.
+              try {
+                channelName = `${
+                  GuildStore.getGuild(channelObj.guild_id).name
+                } | ${channelObj.name}`;
+              } catch (error) {
+                channelName = channelObj.name;
+              }
+              ret.props.children[3] = React.createElement(VoiceChannelField, {
+                onClick: (e) => {
+                  ChannelActions.selectVoiceChannel(channel.channelId);
+                },
+              });
+            }
+          );
         }
 
         patchUserPopoutBody() {
-            Patcher.after(modules.UserPopoutBody, "default", (_, [props], ret) => {
-                let channel = modules.VoiceStates.getVoiceStateForUser(props.user.id);
-                if (UserStore.getCurrentUser().id === props.user.id) return ret;
-                if (channel === undefined) return ret;
-                let channelObj = ChannelStore.getChannel(channel.channelId);
-                if (channelObj.name === "") return  ret; // This happens when the user is in a voice call.
-                try {
-                    channelName = `${GuildStore.getGuild(channelObj.guild_id).name} | ${channelObj.name}`;
-                } catch (error) {
-                    channelName = channelObj.name;
-                }
-                ret.props.children.push(React.createElement(VoiceChannelField, {
-                    onClick: (e) => {
-                        ChannelActions.selectVoiceChannel(channel.channelId);
-                    }
-                }))
-            });
-        };
+          Patcher.after(
+            modules.UserPopoutBody,
+            "default",
+            (_, [props], ret) => {
+              let channel = modules.VoiceStates.getVoiceStateForUser(
+                props.user.id
+              );
+              if (UserStore.getCurrentUser().id === props.user.id) return ret;
+              if (channel === undefined) return ret;
+              let channelObj = ChannelStore.getChannel(channel.channelId);
+              if (channelObj.name === "") return ret; // This happens when the user is in a voice call.
+              try {
+                channelName = `${
+                  GuildStore.getGuild(channelObj.guild_id).name
+                } | ${channelObj.name}`;
+              } catch (error) {
+                channelName = channelObj.name;
+              }
+              ret.props.children.push(
+                React.createElement(VoiceChannelField, {
+                  onClick: (e) => {
+                    ChannelActions.selectVoiceChannel(channel.channelId);
+                  },
+                })
+              );
+            }
+          );
+        }
         getSettingsPanel() {
-            return new Settings.Switch('Display in profile', 'When enabled, the channel will also be visible in the user profile.', this.settings.useProfileModal,
-                (val => {
-                    this.setAllSettings(val);
-                })).getElement();
-        };
+          return new Settings.Switch(
+            "Display in profile",
+            "When enabled, the channel will also be visible in the user profile.",
+            this.settings.useProfileModal,
+            (val) => {
+              this.setAllSettings(val);
+            }
+          ).getElement();
+        }
 
         setAllSettings(statement) {
-            this.settings.useProfileModal = statement;
-            BdApi.setData(config.info.name, 'useProfileModal', statement);
-        };
+          this.settings.useProfileModal = statement;
+          BdApi.setData(config.info.name, "useProfileModal", statement);
+        }
 
         preLoadSetting() {
-            const loadData = BdApi.getData(config.info.name, 'useProfileModal');
-            this.settings.useProfileModal = (loadData ? loadData : false);
-        };
-    }
+          const loadData = BdApi.getData(config.info.name, "useProfileModal");
+          this.settings.useProfileModal = loadData ? loadData : false;
+        }
+      }
 
-    return plugin;
-})(global.ZeresPluginLibrary.buildPlugin(config)) : class {
-    constructor() {
+      return plugin;
+    })(global.ZeresPluginLibrary.buildPlugin(config))
+  : class {
+      constructor() {
         this._config = config;
-    }
+      }
 
-    load() {
-        BdApi.showConfirmationModal("Library plugin is needed",
-            `The library plugin needed for PluginBuilder is missing. Please click Download Now to install it.`, {
-                confirmText: "Download",
-                cancelText: "Cancel",
-                onConfirm: () => {
-                    request.get("https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js", (error, response, body) => {
-                        if (error)
-                            return electron.shell.openExternal("https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js");
+      load() {
+        BdApi.showConfirmationModal(
+          "Library plugin is needed",
+          `The library plugin needed for PluginBuilder is missing. Please click Download Now to install it.`,
+          {
+            confirmText: "Download",
+            cancelText: "Cancel",
+            onConfirm: () => {
+              request.get(
+                "https://rauenzi.github.io/BDPluginLibrary/release/0PluginLibrary.plugin.js",
+                (error, response, body) => {
+                  if (error)
+                    return electron.shell.openExternal(
+                      "https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/rauenzi/BDPluginLibrary/master/release/0PluginLibrary.plugin.js"
+                    );
 
-                        fs.writeFileSync(path.join(BdApi.Plugins.folder, "0PluginLibrary.plugin.js"), body);
-                    });
+                  fs.writeFileSync(
+                    path.join(BdApi.Plugins.folder, "0PluginLibrary.plugin.js"),
+                    body
+                  );
                 }
-            });
-    }
+              );
+            },
+          }
+        );
+      }
 
-    start() {
-    }
+      start() {}
 
-    stop() {
-    }
-};
+      stop() {}
+    };
 /*@end@*/
