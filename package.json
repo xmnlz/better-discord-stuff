@@ -1,0 +1,18 @@
+{
+    "name": "better-discord-stuff",
+    "description": "All staff for BetterDiscord.",
+    "private": true,
+    "devDependencies": {
+        "bundlebd": "^1.0.0"
+    },
+    "scripts": {
+        "build": "npx bundlebd",
+        "dev": "npx bundlebd --development",
+        "vus:build": "yarn build VoiceUserShow",
+        "vus:dev": "yarn dev VoiceUserShow"
+    },
+    "dependencies": {
+        "@types/react": "^18.0.17",
+        "react": "^18.2.0"
+    }
+}
