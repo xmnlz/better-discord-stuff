@@ -17,14 +17,6 @@ export default class VoiceUserShow extends BasePlugin {
     }
 
     onStart() {
-        PluginUpdater.checkForUpdate(
-            // @ts-ignore
-            config.info.name,
-            // @ts-ignore
-            config.info.version,
-            'https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js'
-        );
-
         this.preLoadSetting();
 
         BdApi.injectCSS('global-styles-vus', styles);

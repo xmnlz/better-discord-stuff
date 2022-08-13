@@ -1,5 +1,5 @@
 /**
- * @name UserVoiceShowDev
+ * @name UserVoiceShow
  * @author xmnlz
  * @description The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.
  * @version 0.0.8
@@ -33,7 +33,7 @@
 
 const config = {
 	info: {
-		name: "UserVoiceShowDev",
+		name: "UserVoiceShow",
 		authors: [{
 			name: "xmnlz",
 		}],
@@ -47,7 +47,7 @@ const config = {
 function buildPlugin([BasePlugin, Library]) {
 	let Plugin;
 
-	/*! Foconst meta = {name:"UserVoiceShowDev",author:"xmnlz",description:"The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",version:"0.0.8",authorLink:"https://github.com/xmlnz",source:"https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",updateUrl:"https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"};r license information please see VoiceUserShow.plugin.js.LICENSE.txt */
+	/*! Foconst meta = {name:"UserVoiceShow",author:"xmnlz",description:"The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",version:"0.0.8",authorLink:"https://github.com/xmlnz",source:"https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",updateUrl:"https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"};r license information please see VoiceUserShow.plugin.js.LICENSE.txt */
 	(() => {
 		var __webpack_modules__ = {
 			569: (module, __webpack_exports__, __webpack_require__) => {
@@ -356,7 +356,6 @@ function buildPlugin([BasePlugin, Library]) {
 					super()
 				}
 				onStart() {
-					external_Library_namespaceObject.PluginUpdater.checkForUpdate(config.info.name, config.info.version, "https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js");
 					this.preLoadSetting();
 					BdApi.injectCSS("global-styles-vus", styles.Z);
 					this.patchUserPopoutBody();
