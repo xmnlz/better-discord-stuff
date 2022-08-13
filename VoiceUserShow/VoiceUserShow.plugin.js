@@ -1,5 +1,5 @@
 /**
- * @name UserVoiceShowDev
+ * @name UserVoiceShow
  * @author xmnlz
  * @description The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.
  * @version 0.0.8
@@ -33,7 +33,7 @@
 
 const config = {
 	info: {
-		name: "UserVoiceShowDev",
+		name: "UserVoiceShow",
 		authors: [{
 			name: "xmnlz",
 		}],
