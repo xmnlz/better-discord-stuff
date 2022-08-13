@@ -47,7 +47,7 @@ const config = {
 function buildPlugin([BasePlugin, Library]) {
 	let Plugin;
 
-	/*! Foconst meta = {name:"UserVoiceShowDev",author:"xmnlz",description:"The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",version:"0.0.8",authorLink:"https://github.com/xmlnz",source:"https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",updateUrl:"https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"};r license information please see VoiceUserShow.plugin.js.LICENSE.txt */
+	/*! Foconst meta = {name:"UserVoiceShow",author:"xmnlz",description:"The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",version:"0.0.8",authorLink:"https://github.com/xmlnz",source:"https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",updateUrl:"https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"};r license information please see VoiceUserShow.plugin.js.LICENSE.txt */
 	(() => {
 		var __webpack_modules__ = {
 			569: (module, __webpack_exports__, __webpack_require__) => {
