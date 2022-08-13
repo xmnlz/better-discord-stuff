@@ -318,7 +318,7 @@ function buildPlugin([BasePlugin, Library]) {
 						if (!channel) return;
 						const guild = getGuild(channel.guild_id);
 						let channelName = channel.name;
-						if (guild) channelName = guild.name + channelName;
+						if (guild) channelName = guild.name + " | " + channelName;
 						return (0, jsx_runtime.jsx)(VoiceChannelField, {
 							name: channelName,
 							onClick: () => handleClick(channel)

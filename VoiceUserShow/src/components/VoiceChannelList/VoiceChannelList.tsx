@@ -35,7 +35,7 @@ const VoiceChannelList = (props: VoiceChannelListProps) => {
                 let channelName = channel.name;
 
                 if (guild) {
-                    channelName = guild.name + channelName;
+                    channelName = guild.name + ' | ' + channelName;
                 }
                 return (
                     <VoiceChannelField
