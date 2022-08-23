@@ -15,13 +15,14 @@ const VoiceChannelList = (props: VoiceChannelListProps) => {
     const { channelList } = props;
 
     const handleClick = (channel) => {
+        if (channel === undefined) return;
         if (!checkPermissions(channel)) {
             return BdApi.showToast('Not enough permissions to enter the channel.', {
                 type: 'warning',
                 icon: true,
             });
         } else {
-            ChannelActions.selectVoiceChannel(channel.channelId);
+            ChannelActions.selectVoiceChannel(channel.id);
         }
     };
 
