@@ -305,11 +305,12 @@ function buildPlugin([BasePlugin, Library]) {
 					channelList
 				} = props;
 				const handleClick = channel => {
+					if (void 0 === channel) return;
 					if (!checkPermissions(channel)) return BdApi.showToast("Not enough permissions to enter the channel.", {
 						type: "warning",
 						icon: true
 					});
-					else ChannelActions.selectVoiceChannel(channel.channelId)
+					else ChannelActions.selectVoiceChannel(channel.id)
 				};
 				return (0, jsx_runtime.jsx)("div", {
 					className: "voiceChannelList",
