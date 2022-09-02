@@ -19,9 +19,15 @@ export default class VoiceUserShow extends BasePlugin {
     onStart() {
         this.preLoadSetting();
 
+        PluginUpdater.checkForUpdate(
+            config.info.name,
+            config.info.version,
+            'https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js'
+        );
+
         BdApi.injectCSS('global-styles-vus', styles);
 
-        this.patchUserPopoutBody();
+        this.patchUserPopoutSection();
         this.pathUserProfileModalHeader();
     }
 
@@ -30,16 +36,18 @@ export default class VoiceUserShow extends BasePlugin {
         BdApi.clearCSS('global-styles-vus');
     }
 
-    patchUserPopoutBody() {
-        const UserPopoutBody = WebpackModules.find(
-            (m) =>
-                m?.default?.displayName === 'UserPopoutBody' &&
-                m.default.toString().indexOf('ROLES_LIST') > -1
+    patchUserPopoutSection() {
+        const UserPopoutSection = WebpackModules.find(
+            (m) => m?.default?.displayName === 'UserPopoutSection'
         );
 
-        Patcher.after(UserPopoutBody, 'default', (_, [props], ret) => {
+        Patcher.after(UserPopoutSection, 'default', (_, [props], ret) => {
             const channelList = [];
-            const { user } = props;
+
+            if (ret?.props.children.length == 3) return;
+
+            const { user } = ret?.props.children[1].props;
+            if (!user.id) return ret;
 
             const isCurrentUser = user.id === UserStore.getCurrentUser().id;
 
@@ -54,7 +62,7 @@ export default class VoiceUserShow extends BasePlugin {
                 channelList.push(channelId);
             }
 
-            ret?.props.children.splice(4, 0, <VoiceChannelList channelList={channelList} />);
+            ret?.props.children.push(<VoiceChannelList channelList={channelList} />);
         });
     }
 

@@ -2,7 +2,7 @@
  * @name UserVoiceShow
  * @author xmnlz
  * @description The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.
- * @version 0.0.8
+ * @version 0.0.9
  * @authorLink https://github.com/xmlnz
  * @source https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js
  * @updateUrl https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js
@@ -37,7 +37,7 @@ const config = {
 		authors: [{
 			name: "xmnlz",
 		}],
-		version: "0.0.8",
+		version: "0.0.9",
 		description: "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
 		github: "https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",
 		github_raw: "https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"
@@ -47,10 +47,10 @@ const config = {
 function buildPlugin([BasePlugin, Library]) {
 	let Plugin;
 
-	/*! Foconst meta = {name:"UserVoiceShow",author:"xmnlz",description:"The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",version:"0.0.8",authorLink:"https://github.com/xmlnz",source:"https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",updateUrl:"https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"};r license information please see VoiceUserShow.plugin.js.LICENSE.txt */
+	/*! Foconst meta = {name:"UserVoiceShow",author:"xmnlz",description:"The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",version:"0.0.9",authorLink:"https://github.com/xmlnz",source:"https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",updateUrl:"https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"};r license information please see UserVoiceShow.plugin.js.LICENSE.txt */
 	(() => {
 		var __webpack_modules__ = {
-			569: (module, __webpack_exports__, __webpack_require__) => {
+			783: (module, __webpack_exports__, __webpack_require__) => {
 				"use strict";
 				__webpack_require__.d(__webpack_exports__, {
 					Z: () => __WEBPACK_DEFAULT_EXPORT__
@@ -61,7 +61,7 @@ function buildPlugin([BasePlugin, Library]) {
 				var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(268);
 				var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_2___default = __webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_2__);
 				var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_2___default()(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_1___default());
-				___CSS_LOADER_EXPORT___.push([module.id, ".voiceChannelField {\r\n    margin: 5px 0px;\r\n    text-align: center;\r\n    padding: 5px;\r\n    color: #fff !important;\r\n    font-size: 16px !important;\r\n    border-radius: 7px;\r\n}\r\n\r\n.voiceChannelField:hover {\r\n    background: #06c;\r\n    cursor: pointer;\r\n}\r\n\r\n.voiceChannelList {\r\n    padding: 5px;\r\n    margin: 5px;\r\n}\r\n", ""]);
+				___CSS_LOADER_EXPORT___.push([module.id, ".voiceChannelField {\r\n    margin: 5px 0px;\r\n    text-align: center;\r\n    padding: 5px;\r\n    color: #fff !important;\r\n    font-size: 16px !important;\r\n    border-radius: 7px;\r\n}\r\n\r\n.voiceChannelField:hover {\r\n    background: #06c;\r\n    cursor: pointer;\r\n}\r\n\r\n.voiceChannelList {\r\n    padding: 5px;\r\n}\r\n", ""]);
 				bundlebd_styles__WEBPACK_IMPORTED_MODULE_0__.Z._load(___CSS_LOADER_EXPORT___.toString());
 				const __WEBPACK_DEFAULT_EXPORT__ = ___CSS_LOADER_EXPORT___.toString()
 			},
@@ -342,7 +342,7 @@ function buildPlugin([BasePlugin, Library]) {
 					}
 				})
 			};
-			var styles = __webpack_require__(569);
+			var styles = __webpack_require__(783);
 			const {
 				__getLocalVars
 			} = external_Library_namespaceObject.WebpackModules.getByProps("getVoiceStateForUser");
@@ -358,6 +358,7 @@ function buildPlugin([BasePlugin, Library]) {
 				}
 				onStart() {
 					this.preLoadSetting();
+					external_Library_namespaceObject.PluginUpdater.checkForUpdate(config.info.name, config.info.version, "https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js");
 					BdApi.injectCSS("global-styles-vus", styles.Z);
 					this.patchUserPopoutBody();
 					this.pathUserProfileModalHeader()
@@ -367,12 +368,14 @@ function buildPlugin([BasePlugin, Library]) {
 					BdApi.clearCSS("global-styles-vus")
 				}
 				patchUserPopoutBody() {
-					const UserPopoutBody = external_Library_namespaceObject.WebpackModules.find((m => "UserPopoutBody" === m?.default?.displayName && m.default.toString().indexOf("ROLES_LIST") > -1));
+					const UserPopoutBody = external_Library_namespaceObject.WebpackModules.find((m => "UserPopoutSection" === m?.default?.displayName));
 					external_Library_namespaceObject.Patcher.after(UserPopoutBody, "default", ((_, [props], ret) => {
 						const channelList = [];
+						if (3 == ret?.props.children.length) return;
 						const {
 							user
-						} = props;
+						} = ret?.props.children[1].props;
+						if (!user.id) return ret;
 						const isCurrentUser = user.id === main_UserStore.getCurrentUser().id;
 						if (isCurrentUser) return ret;
 						const voiceState = __getLocalVars().users[user.id];
@@ -383,7 +386,7 @@ function buildPlugin([BasePlugin, Library]) {
 							} = voice;
 							channelList.push(channelId)
 						}
-						ret?.props.children.splice(4, 0, (0, jsx_runtime.jsx)(VoiceChannelList, {
+						ret?.props.children.push((0, jsx_runtime.jsx)(VoiceChannelList, {
 							channelList
 						}))
 					}))

@@ -8,8 +8,8 @@
     "scripts": {
         "build": "npx bundlebd",
         "dev": "npx bundlebd --development",
-        "vus:build": "yarn build VoiceUserShow",
-        "vus:dev": "yarn dev VoiceUserShow"
+        "vus:build": "yarn build UserVoiceShow",
+        "vus:dev": "yarn dev UserVoiceShow"
     },
     "dependencies": {
         "@types/react": "^18.0.17",
