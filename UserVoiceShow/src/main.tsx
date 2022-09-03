@@ -29,6 +29,7 @@ export default class VoiceUserShow extends BasePlugin {
 
         this.patchUserPopoutSection();
         this.pathUserProfileModalHeader();
+        this.patchUserPopoutBody();
     }
 
     onStop() {
@@ -44,10 +45,10 @@ export default class VoiceUserShow extends BasePlugin {
         Patcher.after(UserPopoutSection, 'default', (_, [props], ret) => {
             const channelList = [];
 
-            if (ret?.props.children.length == 3) return;
+            if (ret?.props?.children.length == 3) return;
 
             const { user } = ret?.props.children[1].props;
-            if (!user.id) return ret;
+            if (!user?.id) return ret;
 
             const isCurrentUser = user.id === UserStore.getCurrentUser().id;
 
@@ -63,6 +64,36 @@ export default class VoiceUserShow extends BasePlugin {
             }
 
             ret?.props.children.push(<VoiceChannelList channelList={channelList} />);
+        });
+    }
+
+    patchUserPopoutBody() {
+        const UserPopoutBody = WebpackModules.find(
+            (m) =>
+                m?.default?.displayName === 'UserPopoutBody' &&
+                m.default.toString().indexOf('ROLES_LIST') > -1
+        );
+
+        Patcher.after(UserPopoutBody, 'default', (_, [props], ret) => {
+            if (!props?.user?.id) return ret;
+
+            const channelList = [];
+            const { user } = props;
+
+            const isCurrentUser = user.id === UserStore.getCurrentUser().id;
+
+            if (isCurrentUser) return ret;
+
+            const voiceState = __getLocalVars().users[user.id];
+
+            if (voiceState === {}) return ret;
+
+            for (const [_, voice] of Object.entries(voiceState)) {
+                const { channelId } = voice as any;
+                channelList.push(channelId);
+            }
+
+            ret?.props.children.splice(4, 0, <VoiceChannelList channelList={channelList} />);
         });
     }
 

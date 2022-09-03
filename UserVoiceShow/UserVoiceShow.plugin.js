@@ -360,22 +360,23 @@ function buildPlugin([BasePlugin, Library]) {
 					this.preLoadSetting();
 					external_Library_namespaceObject.PluginUpdater.checkForUpdate(config.info.name, config.info.version, "https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js");
 					BdApi.injectCSS("global-styles-vus", styles.Z);
-					this.patchUserPopoutBody();
-					this.pathUserProfileModalHeader()
+					this.patchUserPopoutSection();
+					this.pathUserProfileModalHeader();
+					this.patchUserPopoutBody()
 				}
 				onStop() {
 					external_Library_namespaceObject.Patcher.unpatchAll();
 					BdApi.clearCSS("global-styles-vus")
 				}
-				patchUserPopoutBody() {
-					const UserPopoutBody = external_Library_namespaceObject.WebpackModules.find((m => "UserPopoutSection" === m?.default?.displayName));
-					external_Library_namespaceObject.Patcher.after(UserPopoutBody, "default", ((_, [props], ret) => {
+				patchUserPopoutSection() {
+					const UserPopoutSection = external_Library_namespaceObject.WebpackModules.find((m => "UserPopoutSection" === m?.default?.displayName));
+					external_Library_namespaceObject.Patcher.after(UserPopoutSection, "default", ((_, [props], ret) => {
 						const channelList = [];
-						if (3 == ret?.props.children.length) return;
+						if (3 == ret?.props?.children.length) return;
 						const {
 							user
 						} = ret?.props.children[1].props;
-						if (!user.id) return ret;
+						if (!user?.id) return ret;
 						const isCurrentUser = user.id === main_UserStore.getCurrentUser().id;
 						if (isCurrentUser) return ret;
 						const voiceState = __getLocalVars().users[user.id];
@@ -387,6 +388,29 @@ function buildPlugin([BasePlugin, Library]) {
 							channelList.push(channelId)
 						}
 						ret?.props.children.push((0, jsx_runtime.jsx)(VoiceChannelList, {
+							channelList
+						}))
+					}))
+				}
+				patchUserPopoutBody() {
+					const UserPopoutBody = external_Library_namespaceObject.WebpackModules.find((m => "UserPopoutBody" === m?.default?.displayName && m.default.toString().indexOf("ROLES_LIST") > -1));
+					external_Library_namespaceObject.Patcher.after(UserPopoutBody, "default", ((_, [props], ret) => {
+						if (!props?.user?.id) return ret;
+						const channelList = [];
+						const {
+							user
+						} = props;
+						const isCurrentUser = user.id === main_UserStore.getCurrentUser().id;
+						if (isCurrentUser) return ret;
+						const voiceState = __getLocalVars().users[user.id];
+						if (voiceState === {}) return ret;
+						for (const [_2, voice] of Object.entries(voiceState)) {
+							const {
+								channelId
+							} = voice;
+							channelList.push(channelId)
+						}
+						ret?.props.children.splice(4, 0, (0, jsx_runtime.jsx)(VoiceChannelList, {
 							channelList
 						}))
 					}))
