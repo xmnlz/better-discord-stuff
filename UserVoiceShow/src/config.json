@@ -4,7 +4,7 @@
         "author": "xmnlz",
         "authorLink": "https://github.com/xmlnz",
         "description": "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
-        "version": "1.0.0",
+        "version": "1.0.9",
         "source": "https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",
         "updateUrl": "https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"
     },
