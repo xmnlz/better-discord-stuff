@@ -45,7 +45,7 @@ export default class VoiceUserShow extends BasePlugin {
         Patcher.after(UserPopoutSection, 'default', (_, [props], ret) => {
             const channelList = [];
 
-            if (ret?.props?.children.length == 3) return;
+            if (!ret.props.children[0]) return ret;
 
             const { user } = ret?.props.children[1].props;
             if (!user?.id) return ret;
@@ -63,7 +63,7 @@ export default class VoiceUserShow extends BasePlugin {
                 channelList.push(channelId);
             }
 
-            ret?.props.children.push(<VoiceChannelList channelList={channelList} />);
+            ret?.props.children.splice(2, 0, <VoiceChannelList channelList={channelList} />);
         });
     }
 
