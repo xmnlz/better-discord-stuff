@@ -43,7 +43,7 @@ const VoiceChannelList = (props: VoiceChannelListProps) => {
                 channelName += channel.name;
 
                 if (channel.parent_id && settings.showCategory) {
-                    channelName += ' | ' + getChannel(channel.parent_id).name + ' | ';
+                    channelName += '\n| ' + getChannel(channel.parent_id).name + ' |';
                 }
 
                 return (
