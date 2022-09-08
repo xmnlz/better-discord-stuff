@@ -38,6 +38,11 @@ const VoiceChannelList = (props: VoiceChannelListProps) => {
                 if (guild) {
                     channelName = guild.name + ' | ' + channelName;
                 }
+
+                if (channel.parent_id) {
+                    channelName += '\n| ' + (getChannel(channel.parent_id).name) + ' |';
+                }
+
                 return (
                     <VoiceChannelField
                         name={channelName}
