@@ -2,7 +2,7 @@
  * @name UserVoiceShow
  * @author xmnlz
  * @description The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.
- * @version 1.1.0
+ * @version 1.1.1
  * @authorLink https://github.com/xmlnz
  * @source https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js
  * @updateUrl https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js
@@ -37,7 +37,7 @@ const config = {
 		authors: [{
 			name: "xmnlz",
 		}],
-		version: "1.1.0",
+		version: "1.1.1",
 		description: "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
 		github: "https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",
 		github_raw: "https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"
@@ -47,7 +47,7 @@ const config = {
 function buildPlugin([BasePlugin, Library]) {
 	let Plugin;
 
-	/*! Foconst meta = {name:"UserVoiceShow",author:"xmnlz",description:"The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",version:"1.1.0",authorLink:"https://github.com/xmlnz",source:"https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",updateUrl:"https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"};r license information please see UserVoiceShow.plugin.js.LICENSE.txt */
+	/*! Foconst meta = {name:"UserVoiceShow",author:"xmnlz",description:"The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",version:"1.1.1",authorLink:"https://github.com/xmlnz",source:"https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",updateUrl:"https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"};r license information please see UserVoiceShow.plugin.js.LICENSE.txt */
 	(() => {
 		var __webpack_modules__ = {
 			783: (module, __webpack_exports__, __webpack_require__) => {
@@ -125,7 +125,6 @@ function buildPlugin([BasePlugin, Library]) {
 			},
 			528: (__unused_webpack_module, exports, __webpack_require__) => {
 				"use strict";
-				var __webpack_unused_export__;
 				var f = __webpack_require__(113),
 					k = Symbol.for("react.element"),
 					l = Symbol.for("react.fragment"),
@@ -157,9 +156,9 @@ function buildPlugin([BasePlugin, Library]) {
 						_owner: n.current
 					}
 				}
-				__webpack_unused_export__ = l;
+				exports.Fragment = l;
 				exports.jsx = q;
-				__webpack_unused_export__ = q
+				exports.jsxs = q
 			},
 			606: (module, __unused_webpack_exports, __webpack_require__) => {
 				"use strict";
@@ -318,8 +317,10 @@ function buildPlugin([BasePlugin, Library]) {
 						const channel = getChannel(channelId);
 						if (!channel) return;
 						const guild = getGuild(channel.guild_id);
-						let channelName = channel.name;
-						if (guild) channelName = guild.name + " | " + channelName;
+						let channelName = "";
+						if (guild) channelName += guild.name + " | ";
+						channelName += channel.name;
+						if (channel.parent_id && settings.showCategory) channelName += "\n| " + getChannel(channel.parent_id).name + " |";
 						return (0, jsx_runtime.jsx)(VoiceChannelField, {
 							name: channelName,
 							onClick: () => handleClick(channel)
@@ -330,16 +331,28 @@ function buildPlugin([BasePlugin, Library]) {
 			var external_BdApi_React_ = __webpack_require__(113);
 			const SwitchItem = external_Library_namespaceObject.WebpackModules.getByDisplayName("SwitchItem");
 			const SettingsPanel = props => {
-				const [value, setValue] = (0, external_BdApi_React_.useState)(settings.useProfileModal);
-				return (0, jsx_runtime.jsx)(SwitchItem, {
-					children: "Display in profile",
-					note: "When enabled, the channel will also be visible in the user profile.",
-					value,
-					onChange: val => {
-						setValue(val);
-						settings.useProfileModal = val;
-						BdApi.setData("vus", "useProfileModal", val)
-					}
+				const [profileModal, setProfileModal] = (0, external_BdApi_React_.useState)(settings.useProfileModal);
+				const [showCategory, setShowCategory] = (0, external_BdApi_React_.useState)(settings.showCategory);
+				return (0, jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+					children: [(0, jsx_runtime.jsx)(SwitchItem, {
+						children: "Display in profile",
+						note: "When enabled, the channel will also be visible in the user profile.",
+						value: profileModal,
+						onChange: val => {
+							setProfileModal(val);
+							settings.useProfileModal = val;
+							BdApi.setData("vus", "useProfileModal", val)
+						}
+					}), (0, jsx_runtime.jsx)(SwitchItem, {
+						children: "Display category",
+						note: "When enabled, show voice channel with category.",
+						value: showCategory,
+						onChange: val => {
+							setShowCategory(val);
+							settings.showCategory = val;
+							BdApi.setData("vus", "showCategory", val)
+						}
+					})]
 				})
 			};
 			var styles = __webpack_require__(783);
@@ -350,7 +363,8 @@ function buildPlugin([BasePlugin, Library]) {
 				UserStore: main_UserStore
 			} = external_Library_namespaceObject.DiscordModules;
 			const settings = {
-				useProfileModal: false
+				useProfileModal: false,
+				showCategory: false
 			};
 			class VoiceUserShow extends(external_BasePlugin_default()) {
 				constructor() {
@@ -437,8 +451,10 @@ function buildPlugin([BasePlugin, Library]) {
 					}))
 				}
 				preLoadSetting() {
-					const loadData = BdApi.getData("vus", "useProfileModal");
-					settings.useProfileModal = loadData ? loadData : false
+					const useProfileModal = BdApi.getData("vus", "useProfileModal");
+					const showCategory = BdApi.getData("vus", "showCategory");
+					settings.useProfileModal = useProfileModal ? useProfileModal : false;
+					settings.showCategory = showCategory ? showCategory : false
 				}
 				getSettingsPanel() {
 					return (0, jsx_runtime.jsx)(SettingsPanel, {})

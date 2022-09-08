@@ -9,7 +9,12 @@ import styles from './styles/index.css';
 const { __getLocalVars } = WebpackModules.getByProps('getVoiceStateForUser');
 const { UserStore } = DiscordModules;
 
-const settings: { useProfileModal: boolean } = { useProfileModal: false };
+interface ISettings {
+    useProfileModal: boolean;
+    showCategory: boolean;
+}
+
+const settings: ISettings = { useProfileModal: false, showCategory: false };
 
 export default class VoiceUserShow extends BasePlugin {
     constructor() {
@@ -122,8 +127,10 @@ export default class VoiceUserShow extends BasePlugin {
     }
 
     preLoadSetting() {
-        const loadData = BdApi.getData('vus', 'useProfileModal');
-        settings.useProfileModal = loadData ? loadData : false;
+        const useProfileModal = BdApi.getData('vus', 'useProfileModal');
+        const showCategory = BdApi.getData('vus', 'showCategory');
+        settings.useProfileModal = useProfileModal ? useProfileModal : false;
+        settings.showCategory = showCategory ? showCategory : false;
     }
 
     getSettingsPanel() {
