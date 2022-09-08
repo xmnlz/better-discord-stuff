@@ -2,6 +2,7 @@ import React from 'react';
 import { checkPermissions } from '../../utils';
 import { DiscordModules } from '@zlibrary';
 import { VoiceChannelField } from '../VoiceChannelFiled';
+import { settings } from '../../main';
 const { ChannelStore, GuildStore, ChannelActions, UserStore } = DiscordModules;
 
 const { getGuild } = GuildStore;
@@ -33,14 +34,16 @@ const VoiceChannelList = (props: VoiceChannelListProps) => {
                 if (!channel) return;
 
                 const guild = getGuild(channel.guild_id);
-                let channelName = channel.name;
+                let channelName = '';
 
                 if (guild) {
-                    channelName = guild.name + ' | ' + channelName;
+                    channelName += guild.name + ' | ';
                 }
 
-                if (channel.parent_id) {
-                    channelName += '\n| ' + (getChannel(channel.parent_id).name) + ' |';
+                channelName += channel.name;
+
+                if (channel.parent_id && settings.showCategory) {
+                    channelName += ' | ' + getChannel(channel.parent_id).name + ' | ';
                 }
 
                 return (
