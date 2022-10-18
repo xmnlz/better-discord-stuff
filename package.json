@@ -3,13 +3,11 @@
     "description": "All staff for BetterDiscord.",
     "private": true,
     "devDependencies": {
-        "bundlebd": "^1.0.0"
+        "bundlebd": "^2.1.3"
     },
     "scripts": {
         "build": "npx bundlebd",
-        "dev": "npx bundlebd --development",
-        "vus:build": "yarn build UserVoiceShow",
-        "vus:dev": "yarn dev UserVoiceShow"
+        "dev": "npx bundlebd --development"
     },
     "dependencies": {
         "@types/react": "^18.0.17",

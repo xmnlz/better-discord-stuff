@@ -2,6 +2,6 @@
     "entry": "[plugin]/src",
     "output": "[plugin]",
     "devOutput": "[plugin]/dist",
-    "readme": false,
-    "bdPath": "C:/Users/NotToxic89/AppData/Roaming/BetterDiscord"
+    "bdPath": "C:/Users/NotToxic89/AppData/Roaming/BetterDiscord",
+    "readme": "false"
 }

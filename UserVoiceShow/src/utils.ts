@@ -1,4 +1,4 @@
-import { DiscordModules, WebpackModules } from '@zlibrary';
+import { DiscordModules, WebpackModules } from 'zlibrary';
 
 const { Permissions, DiscordPermissions, UserStore } = DiscordModules;
 
@@ -26,4 +26,8 @@ const getLazyModule = (filter) => {
     });
 };
 
-export { checkPermissions, getLazyModule };
+const withProps = (filter: (m: any) => boolean) => {
+    return (m) => Object.values(m).some(filter);
+};
+
+export { checkPermissions, getLazyModule, withProps };

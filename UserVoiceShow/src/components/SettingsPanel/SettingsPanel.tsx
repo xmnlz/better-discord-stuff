@@ -1,4 +1,4 @@
-import { WebpackModules } from '@zlibrary';
+import { WebpackModules } from 'zlibrary';
 import { useState } from 'react';
 import { settings } from '../../main';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { checkPermissions } from '../../utils';
-import { DiscordModules } from '@zlibrary';
+import { DiscordModules } from 'zlibrary';
 import { VoiceChannelField } from '../VoiceChannelFiled';
 import { settings } from '../../main';
 const { ChannelStore, GuildStore, ChannelActions, UserStore } = DiscordModules;
@@ -45,6 +45,8 @@ const VoiceChannelList = (props: VoiceChannelListProps) => {
                 if (channel.parent_id && settings.showCategory) {
                     channelName += '\n| ' + getChannel(channel.parent_id).name + ' |';
                 }
+
+                if (channel.name === '') return;
 
                 return (
                     <VoiceChannelField

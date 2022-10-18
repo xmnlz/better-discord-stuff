@@ -1,13 +1,19 @@
 import React from 'react';
-import BasePlugin from '@zlibrary/plugin';
-import { DiscordModules, Patcher, WebpackModules, PluginUpdater } from '@zlibrary';
+import BasePlugin from 'zlibrary/plugin';
+import { Webpack } from 'betterdiscord';
+import { DiscordModules, WebpackModules, PluginUpdater, Patcher } from 'zlibrary';
 import { VoiceChannelList } from './components/VoiceChannelList';
 import { SettingsPanel } from './components/SettingsPanel';
-import { getLazyModule } from './utils';
+import { getLazyModule, withProps } from './utils';
 import styles from './styles/index.css';
 
 const { __getLocalVars } = WebpackModules.getByProps('getVoiceStateForUser');
 const { UserStore } = DiscordModules;
+
+const {
+    Filters: { byProps, byStrings },
+    getModule,
+} = Webpack;
 
 interface ISettings {
     useProfileModal: boolean;
@@ -32,7 +38,7 @@ export default class VoiceUserShow extends BasePlugin {
 
         BdApi.injectCSS('global-styles-vus', styles);
 
-        this.patchUserPopoutSection();
+        this.patchUserPopoutBodyOld();
         this.pathUserProfileModalHeader();
         this.patchUserPopoutBody();
     }
@@ -42,17 +48,15 @@ export default class VoiceUserShow extends BasePlugin {
         BdApi.clearCSS('global-styles-vus');
     }
 
-    patchUserPopoutSection() {
-        const UserPopoutSection = WebpackModules.find(
-            (m) => m?.default?.displayName === 'UserPopoutSection'
+    patchUserPopoutBodyOld() {
+        const patchUserPopoutBodyOld = getModule(
+            withProps(byStrings('.displayProfile', 'autoFocus'))
         );
 
-        Patcher.after(UserPopoutSection, 'default', (_, [props], ret) => {
+        Patcher.after(patchUserPopoutBodyOld, 'Z', (_, [props], ret) => {
             const channelList = [];
 
-            if (!ret.props.children[0]) return ret;
-
-            const { user } = ret?.props.children[1].props;
+            const { user } = props.user;
             if (!user?.id) return ret;
 
             const isCurrentUser = user.id === UserStore.getCurrentUser().id;
@@ -68,18 +72,22 @@ export default class VoiceUserShow extends BasePlugin {
                 channelList.push(channelId);
             }
 
-            ret?.props.children.splice(2, 0, <VoiceChannelList channelList={channelList} />);
+            ret?.props.children.splice(1, 0, <VoiceChannelList channelList={channelList} />);
         });
     }
 
     patchUserPopoutBody() {
-        const UserPopoutBody = WebpackModules.find(
-            (m) =>
-                m?.default?.displayName === 'UserPopoutBody' &&
-                m.default.toString().indexOf('ROLES_LIST') > -1
+        const UserPopoutBody = getModule(
+            withProps(byStrings('.hidePersonalInformation', '.customStatusActivity'))
         );
 
-        Patcher.after(UserPopoutBody, 'default', (_, [props], ret) => {
+        Patcher.after(UserPopoutBody, 'Z', (_, [props], ret) => {
+            const popoutBodySections = ret.props.children[1].props.children[2].props.children;
+
+            const activitySectionIndex = popoutBodySections.findIndex((section: any) =>
+                section.props.hasOwnProperty('activity')
+            );
+
             if (!props?.user?.id) return ret;
 
             const channelList = [];
@@ -98,20 +106,24 @@ export default class VoiceUserShow extends BasePlugin {
                 channelList.push(channelId);
             }
 
-            ret?.props.children.splice(4, 0, <VoiceChannelList channelList={channelList} />);
+            popoutBodySections.splice(
+                activitySectionIndex,
+                1,
+                <VoiceChannelList channelList={channelList} />
+            );
         });
     }
 
     async pathUserProfileModalHeader() {
-        const UserProfileModalHeader = await getLazyModule(
-            (m) => m && m.default && m.default.displayName === 'UserProfileModalHeader'
-        );
+        const UserProfileModalHeader = getModule(withProps(byStrings('forceShowPremium')));
 
-        Patcher.after(UserProfileModalHeader, 'default', (_, [props], ret) => {
+        Patcher.after(UserProfileModalHeader, 'Z', (_, [props], ret) => {
             if (!settings.useProfileModal) return ret;
 
+            const { user, profileType } = props;
+            if (profileType === 0) return ret;
+
             const channelList = [];
-            const { user } = props;
 
             const voiceState = __getLocalVars().users[user.id];
 
@@ -122,7 +134,11 @@ export default class VoiceUserShow extends BasePlugin {
                 channelList.push(channelId);
             }
 
-            ret?.props.children.splice(4, 0, <VoiceChannelList channelList={channelList} />);
+            ret.props.children.props.children.props.children.splice(
+                1,
+                0,
+                <VoiceChannelList channelList={channelList} />
+            );
         });
     }
 
