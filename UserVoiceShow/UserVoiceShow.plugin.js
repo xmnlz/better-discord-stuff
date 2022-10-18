@@ -2,7 +2,7 @@
  * @name UserVoiceShow
  * @author xmnlz
  * @description The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.
- * @version 1.1.2
+ * @version 1.1.3
  * @authorLink https://github.com/xmlnz
  * @source https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js
  * @updateUrl https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js
@@ -37,7 +37,7 @@ const config = {
 		authors: [{
 			name: "xmnlz",
 		}],
-		version: "1.1.2",
+		version: "1.1.3",
 		description: "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
 		github: "https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",
 		github_raw: "https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"
@@ -289,7 +289,10 @@ function buildPlugin([BasePlugin, Library]) {
 				})))
 			};
 			var React = __webpack_require__(113);
-			const SwitchItem = external_Library_namespaceObject.WebpackModules.getByDisplayName("SwitchItem");
+			const {
+				getModule
+			} = external_BdApi_namespaceObject.Webpack;
+			const SwitchItem = getModule((m => m.toString().includes("helpdeskArticleId")));
 			const SettingsPanel = props => {
 				const [profileModal, setProfileModal] = (0, external_BdApi_React_.useState)(settings.useProfileModal);
 				const [showCategory, setShowCategory] = (0, external_BdApi_React_.useState)(settings.showCategory);
@@ -325,7 +328,7 @@ function buildPlugin([BasePlugin, Library]) {
 					byProps,
 					byStrings
 				},
-				getModule
+				getModule: main_getModule
 			} = external_BdApi_namespaceObject.Webpack;
 			const settings = {
 				useProfileModal: false,
@@ -348,7 +351,7 @@ function buildPlugin([BasePlugin, Library]) {
 					BdApi.clearCSS("global-styles-vus")
 				}
 				patchUserPopoutBodyOld() {
-					const patchUserPopoutBodyOld = getModule(withProps(byStrings(".displayProfile", "autoFocus")));
+					const patchUserPopoutBodyOld = main_getModule(withProps(byStrings(".displayProfile", "autoFocus")));
 					external_Library_namespaceObject.Patcher.after(patchUserPopoutBodyOld, "Z", ((_, [props], ret) => {
 						const channelList = [];
 						const {
@@ -371,7 +374,7 @@ function buildPlugin([BasePlugin, Library]) {
 					}))
 				}
 				patchUserPopoutBody() {
-					const UserPopoutBody = getModule(withProps(byStrings(".hidePersonalInformation", ".customStatusActivity")));
+					const UserPopoutBody = main_getModule(withProps(byStrings(".hidePersonalInformation", ".customStatusActivity")));
 					external_Library_namespaceObject.Patcher.after(UserPopoutBody, "Z", ((_, [props], ret) => {
 						const popoutBodySections = ret.props.children[1].props.children[2].props.children;
 						const activitySectionIndex = popoutBodySections.findIndex((section => section.props.hasOwnProperty("activity")));
@@ -396,7 +399,7 @@ function buildPlugin([BasePlugin, Library]) {
 					}))
 				}
 				async pathUserProfileModalHeader() {
-					const UserProfileModalHeader = getModule(withProps(byStrings("forceShowPremium")));
+					const UserProfileModalHeader = main_getModule(withProps(byStrings("forceShowPremium")));
 					external_Library_namespaceObject.Patcher.after(UserProfileModalHeader, "Z", ((_, [props], ret) => {
 						if (!settings.useProfileModal) return ret;
 						const {

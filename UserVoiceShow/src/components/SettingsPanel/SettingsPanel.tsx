@@ -1,8 +1,10 @@
-import { WebpackModules } from 'zlibrary';
+import { Webpack } from 'betterdiscord';
 import { useState } from 'react';
 import { settings } from '../../main';
 
-const SwitchItem = WebpackModules.getByDisplayName('SwitchItem');
+const { getModule } = Webpack;
+
+const SwitchItem = getModule((m) => m.toString().includes('helpdeskArticleId'));
 
 const SettingsPanel = (props) => {
     const [profileModal, setProfileModal] = useState(settings.useProfileModal);
