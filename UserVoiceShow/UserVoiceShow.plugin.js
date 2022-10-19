@@ -374,15 +374,15 @@ function buildPlugin([BasePlugin, Library]) {
 					}))
 				}
 				patchUserPopoutBody() {
-					const UserPopoutBody = main_getModule(withProps(byStrings(".hidePersonalInformation", ".customStatusActivity")));
+					const UserPopoutBody = main_getModule(withProps(byStrings("forceShowPremium")));
 					external_Library_namespaceObject.Patcher.after(UserPopoutBody, "Z", ((_, [props], ret) => {
-						const popoutBodySections = ret.props.children[1].props.children[2].props.children;
-						const activitySectionIndex = popoutBodySections.findIndex((section => section.props.hasOwnProperty("activity")));
+						const {
+							user,
+							profileType
+						} = props;
+						if (1 === profileType) return ret;
 						if (!props?.user?.id) return ret;
 						const channelList = [];
-						const {
-							user
-						} = props;
 						const isCurrentUser = user.id === main_UserStore.getCurrentUser().id;
 						if (isCurrentUser) return ret;
 						const voiceState = __getLocalVars().users[user.id];
@@ -393,7 +393,9 @@ function buildPlugin([BasePlugin, Library]) {
 							} = voice;
 							channelList.push(channelId)
 						}
-						popoutBodySections.splice(activitySectionIndex, 1, external_BdApi_React_default().createElement(VoiceChannelList, {
+						const main = ret.props.children.props.children.props.children[2].props.children;
+						ret.props.children.props.children.props.children[2].props.children = [main];
+						ret.props.children.props.children.props.children[2].props.children.push(external_BdApi_React_default().createElement(VoiceChannelList, {
 							channelList
 						}))
 					}))

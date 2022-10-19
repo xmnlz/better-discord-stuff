@@ -77,21 +77,15 @@ export default class VoiceUserShow extends BasePlugin {
     }
 
     patchUserPopoutBody() {
-        const UserPopoutBody = getModule(
-            withProps(byStrings('.hidePersonalInformation', '.customStatusActivity'))
-        );
+        const UserPopoutBody = getModule(withProps(byStrings('forceShowPremium')));
 
         Patcher.after(UserPopoutBody, 'Z', (_, [props], ret) => {
-            const popoutBodySections = ret.props.children[1].props.children[2].props.children;
-
-            const activitySectionIndex = popoutBodySections.findIndex((section: any) =>
-                section.props.hasOwnProperty('activity')
-            );
+            const { user, profileType } = props;
+            if (profileType === 1) return ret;
 
             if (!props?.user?.id) return ret;
 
             const channelList = [];
-            const { user } = props;
 
             const isCurrentUser = user.id === UserStore.getCurrentUser().id;
 
@@ -106,9 +100,10 @@ export default class VoiceUserShow extends BasePlugin {
                 channelList.push(channelId);
             }
 
-            popoutBodySections.splice(
-                activitySectionIndex,
-                1,
+            const main = ret.props.children.props.children.props.children[2].props.children;
+            ret.props.children.props.children.props.children[2].props.children = [main];
+
+            ret.props.children.props.children.props.children[2].props.children.push(
                 <VoiceChannelList channelList={channelList} />
             );
         });
