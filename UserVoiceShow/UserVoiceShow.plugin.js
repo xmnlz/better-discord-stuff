@@ -2,7 +2,7 @@
  * @name UserVoiceShow
  * @author xmnlz
  * @description The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.
- * @version 1.1.4
+ * @version 1.1.5
  * @authorLink https://github.com/xmlnz
  * @source https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js
  * @updateUrl https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js
@@ -37,7 +37,7 @@ const config = {
 		authors: [{
 			name: "xmnlz",
 		}],
-		version: "1.1.4",
+		version: "1.1.5",
 		description: "The UserVoiceShow plugin allows you to find out the voice channel where the user is sitting.",
 		github: "https://github.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js",
 		github_raw: "https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js"
@@ -73,7 +73,7 @@ function buildPlugin([BasePlugin, Library]) {
 				var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(268);
 				var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = __webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
 				var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()(_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default());
-				___CSS_LOADER_EXPORT___.push([module.id, ".voiceChannelField {\r\n    margin: 5px 0px;\r\n    text-align: center;\r\n    padding: 5px;\r\n    color: #fff !important;\r\n    font-size: 16px !important;\r\n    border-radius: 7px;\r\n    white-space: pre-wrap;\r\n}\r\n\r\n.voiceChannelField:hover {\r\n    background: #06c;\r\n    cursor: pointer;\r\n}\r\n\r\n.voiceChannelList {\r\n    padding: 5px;\r\n}\r\n", ""]);
+				___CSS_LOADER_EXPORT___.push([module.id, ".voiceChannelField {\r\n    margin: 5px 0px;\r\n    text-align: center;\r\n    padding: 5px;\r\n    color: #fff !important;\r\n    font-size: 16px !important;\r\n    border-radius: 7px;\r\n    /* Fix \\n */\r\n    white-space: pre-wrap;\r\n    /* Fix colors in light profile */\r\n    mix-blend-mode: screen;\r\n}\r\n\r\n.voiceChannelField:hover {\r\n    background: #06c;\r\n    cursor: pointer;\r\n}\r\n\r\n.voiceChannelList {\r\n    padding: 5px;\r\n}\r\n", ""]);
 				(0, styles__WEBPACK_IMPORTED_MODULE_2__.z)("index.css", ___CSS_LOADER_EXPORT___.toString());
 				const __WEBPACK_DEFAULT_EXPORT__ = ___CSS_LOADER_EXPORT___.toString()
 			},
@@ -393,9 +393,9 @@ function buildPlugin([BasePlugin, Library]) {
 							} = voice;
 							channelList.push(channelId)
 						}
-						const main = ret.props.children.props.children.props.children[2].props.children;
-						ret.props.children.props.children.props.children[2].props.children = [main];
-						ret.props.children.props.children.props.children[2].props.children.push(external_BdApi_React_default().createElement(VoiceChannelList, {
+						const main = ret.props.children.props.children.props.children;
+						ret.props.children.props.children.props.children = [main];
+						ret.props.children.props.children.props.children.push(external_BdApi_React_default().createElement(VoiceChannelList, {
 							channelList
 						}))
 					}))
@@ -418,7 +418,7 @@ function buildPlugin([BasePlugin, Library]) {
 							} = voice;
 							channelList.push(channelId)
 						}
-						ret.props.children.props.children.props.children.splice(1, 0, external_BdApi_React_default().createElement(VoiceChannelList, {
+						ret.props.children.props.children.props.children.props.children.splice(1, 0, external_BdApi_React_default().createElement(VoiceChannelList, {
 							channelList
 						}))
 					}))
