@@ -100,10 +100,10 @@ export default class VoiceUserShow extends BasePlugin {
                 channelList.push(channelId);
             }
 
-            const main = ret.props.children.props.children.props.children[2].props.children;
-            ret.props.children.props.children.props.children[2].props.children = [main];
+            const main = ret.props.children.props.children.props.children;
+            ret.props.children.props.children.props.children = [main];
 
-            ret.props.children.props.children.props.children[2].props.children.push(
+            ret.props.children.props.children.props.children.push(
                 <VoiceChannelList channelList={channelList} />
             );
         });
@@ -129,7 +129,7 @@ export default class VoiceUserShow extends BasePlugin {
                 channelList.push(channelId);
             }
 
-            ret.props.children.props.children.props.children.splice(
+            ret.props.children.props.children.props.children.props.children.splice(
                 1,
                 0,
                 <VoiceChannelList channelList={channelList} />
