@@ -1,14 +1,13 @@
 import { Webpack } from 'betterdiscord';
 import { useState } from 'react';
-import { settings } from '../../main';
-
+import { settings } from '../../utils';
 const { getModule } = Webpack;
 
 const SwitchItem = getModule((m) => m.toString().includes('helpdeskArticleId'));
 
-const SettingsPanel = (props) => {
-    const [profileModal, setProfileModal] = useState(settings.useProfileModal);
-    const [showCategory, setShowCategory] = useState(settings.showCategory);
+const SettingsPanel = () => {
+    const [profileModal, setProfileModal] = useState<boolean>(settings.useProfileModal);
+    const [showCategory, setShowCategory] = useState<boolean>(settings.useShowCategory);
 
     return (
         <>
@@ -16,20 +15,20 @@ const SettingsPanel = (props) => {
                 children={'Display in profile'}
                 note="When enabled, the channel will also be visible in the user profile."
                 value={profileModal}
-                onChange={(val) => {
-                    setProfileModal(val);
-                    settings.useProfileModal = val;
-                    BdApi.setData('vus', 'useProfileModal', val);
+                onChange={(value) => {
+                    setProfileModal(value);
+                    settings.useProfileModal = value;
+                    // Data.save('useProfileModal', value);
                 }}
             />
             <SwitchItem
                 children={'Display category'}
                 note="When enabled, show voice channel with category."
                 value={showCategory}
-                onChange={(val) => {
-                    setShowCategory(val);
-                    settings.showCategory = val;
-                    BdApi.setData('vus', 'showCategory', val);
+                onChange={(value) => {
+                    setShowCategory(value);
+                    settings.useShowCategory = value;
+                    // Data.save('useShowCategory', value);
                 }}
             />
         </>

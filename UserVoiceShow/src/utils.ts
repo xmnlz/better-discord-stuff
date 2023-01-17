@@ -1,8 +1,14 @@
+import { createSettings } from 'bundlebd';
 import { DiscordModules, WebpackModules } from 'zlibrary';
 
 const { Permissions, DiscordPermissions, UserStore } = DiscordModules;
 
-const checkPermissions = (channel) => {
+export const settings = createSettings({
+    useProfileModal: false,
+    useShowCategory: false,
+});
+
+export const checkPermissions = (channel) => {
     const hasPermissions = Permissions.can({
         permission: DiscordPermissions.CONNECT,
         user: UserStore.getCurrentUser(),
@@ -12,7 +18,7 @@ const checkPermissions = (channel) => {
     return hasPermissions;
 };
 
-const getLazyModule = (filter) => {
+export const getLazyModule = (filter) => {
     const cached = WebpackModules.getModule(filter);
     if (cached) return Promise.resolve(cached);
 
@@ -26,8 +32,6 @@ const getLazyModule = (filter) => {
     });
 };
 
-const withProps = (filter: (m: any) => boolean) => {
-    return (m) => Object.values(m).some(filter);
+export const isEmpty = (obj: Object) => {
+    return Object.keys(obj).length === 0;
 };
-
-export { checkPermissions, getLazyModule, withProps };

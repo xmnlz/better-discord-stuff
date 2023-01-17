@@ -1,24 +1,21 @@
 import React from 'react';
-import { checkPermissions } from '../../utils';
+import { checkPermissions, settings } from '../../utils';
 import { DiscordModules } from 'zlibrary';
 import { VoiceChannelField } from '../VoiceChannelFiled';
-import { settings } from '../../main';
 const { ChannelStore, GuildStore, ChannelActions, UserStore } = DiscordModules;
 
 const { getGuild } = GuildStore;
 const { getChannel } = ChannelStore;
 
 interface VoiceChannelListProps {
-    channelList: Array<string>;
+    channelList: string[];
 }
 
-const VoiceChannelList = (props: VoiceChannelListProps) => {
-    const { channelList } = props;
-
+const VoiceChannelList = ({ channelList }: VoiceChannelListProps) => {
     const handleClick = (channel) => {
-        if (channel === undefined) return;
+        if (!channel) return;
         if (!checkPermissions(channel)) {
-            return BdApi.showToast('Not enough permissions to enter the channel.', {
+            return BdApi.UI.showToast('Not enough permissions to enter the channel.', {
                 type: 'warning',
                 icon: true,
             });
@@ -42,7 +39,7 @@ const VoiceChannelList = (props: VoiceChannelListProps) => {
 
                 channelName += channel.name;
 
-                if (channel.parent_id && settings.showCategory) {
+                if (channel.parent_id && settings.useShowCategory) {
                     channelName += '\n| ' + getChannel(channel.parent_id).name + ' |';
                 }
 

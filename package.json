@@ -3,14 +3,15 @@
     "description": "All staff for BetterDiscord.",
     "private": true,
     "devDependencies": {
-        "bundlebd": "^2.1.3"
+        "bundlebd": "^3.2.0"
     },
     "scripts": {
-        "build": "npx bundlebd",
-        "dev": "npx bundlebd --development"
+        "build": "npx bundlebd --plugin",
+        "dev": "npx bundlebd --dev --plugin "
     },
     "dependencies": {
-        "@types/react": "^18.0.17",
+        "@types/react": "^18.0.26",
+        "esbuild": "^0.16.9",
         "react": "^18.2.0"
     }
 }

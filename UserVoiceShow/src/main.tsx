@@ -1,152 +1,105 @@
 import React from 'react';
 import BasePlugin from 'zlibrary/plugin';
-import { Webpack } from 'betterdiscord';
+import { Webpack, DOM } from 'betterdiscord';
 import { DiscordModules, WebpackModules, PluginUpdater, Patcher } from 'zlibrary';
 import { VoiceChannelList } from './components/VoiceChannelList';
 import { SettingsPanel } from './components/SettingsPanel';
-import { getLazyModule, withProps } from './utils';
+import { isEmpty, settings } from './utils';
 import styles from './styles/index.css';
+import { WebpackUtils } from 'bundlebd';
 
 const { __getLocalVars } = WebpackModules.getByProps('getVoiceStateForUser');
+
 const { UserStore } = DiscordModules;
+const { getModuleWithKey } = WebpackUtils;
 
 const {
-    Filters: { byProps, byStrings },
-    getModule,
+    Filters: { byStrings },
 } = Webpack;
 
-interface ISettings {
-    useProfileModal: boolean;
-    showCategory: boolean;
+interface displayProfileType {
+    displayProfile: { userId: string };
 }
 
-const settings: ISettings = { useProfileModal: false, showCategory: false };
-
-export default class VoiceUserShow extends BasePlugin {
+export default class UserVoiceShow extends BasePlugin {
     constructor() {
         super();
     }
 
     onStart() {
-        this.preLoadSetting();
-
         PluginUpdater.checkForUpdate(
             config.info.name,
             config.info.version,
             'https://raw.githubusercontent.com/xmlnz/better-discord-stuff/main/UserVoiceShow/UserVoiceShow.plugin.js'
         );
 
-        BdApi.injectCSS('global-styles-vus', styles);
-
-        this.patchUserPopoutBodyOld();
-        this.pathUserProfileModalHeader();
         this.patchUserPopoutBody();
+        this.pathUserProfileModalHeader();
+        DOM.addStyle(styles);
     }
 
     onStop() {
         Patcher.unpatchAll();
-        BdApi.clearCSS('global-styles-vus');
-    }
-
-    patchUserPopoutBodyOld() {
-        const patchUserPopoutBodyOld = getModule(
-            withProps(byStrings('.displayProfile', 'autoFocus'))
-        );
-
-        Patcher.after(patchUserPopoutBodyOld, 'Z', (_, [props], ret) => {
-            const channelList = [];
-
-            const { user } = props.user;
-            if (!user?.id) return ret;
-
-            const isCurrentUser = user.id === UserStore.getCurrentUser().id;
-
-            if (isCurrentUser) return ret;
-
-            const voiceState = __getLocalVars().users[user.id];
-
-            if (voiceState === {}) return ret;
-
-            for (const [_, voice] of Object.entries(voiceState)) {
-                const { channelId } = voice as any;
-                channelList.push(channelId);
-            }
-
-            ret?.props.children.splice(1, 0, <VoiceChannelList channelList={channelList} />);
-        });
+        DOM.removeStyle();
     }
 
     patchUserPopoutBody() {
-        const UserPopoutBody = getModule(withProps(byStrings('forceShowPremium')));
+        const [UserPopoutBody, key] = getModuleWithKey(byStrings('.showCopiableUsername'));
 
-        Patcher.after(UserPopoutBody, 'Z', (_, [props], ret) => {
-            const { user, profileType } = props;
-            if (profileType === 1) return ret;
-
-            if (!props?.user?.id) return ret;
-
+        Patcher.after(UserPopoutBody, key, (_, [{ displayProfile }]: [displayProfileType], ret) => {
             const channelList = [];
 
-            const isCurrentUser = user.id === UserStore.getCurrentUser().id;
+            const { userId } = displayProfile;
 
+            if (!userId) return ret;
+
+            const isCurrentUser = userId === UserStore.getCurrentUser().id;
             if (isCurrentUser) return ret;
 
-            const voiceState = __getLocalVars().users[user.id];
+            const voiceState = __getLocalVars().users[userId];
 
-            if (voiceState === {}) return ret;
+            if (!voiceState || isEmpty(voiceState)) return ret;
 
             for (const [_, voice] of Object.entries(voiceState)) {
                 const { channelId } = voice as any;
                 channelList.push(channelId);
             }
 
-            const main = ret.props.children.props.children.props.children;
-            ret.props.children.props.children.props.children = [main];
-
-            ret.props.children.props.children.props.children.push(
-                <VoiceChannelList channelList={channelList} />
-            );
+            ret.props.children.push(<VoiceChannelList channelList={channelList} />);
         });
     }
 
     async pathUserProfileModalHeader() {
-        const UserProfileModalHeader = getModule(withProps(byStrings('forceShowPremium')));
+        const [UserProfileModalHeader, key] = getModuleWithKey(byStrings('forceShowPremium'));
 
-        Patcher.after(UserProfileModalHeader, 'Z', (_, [props], ret) => {
-            if (!settings.useProfileModal) return ret;
+        Patcher.after(UserProfileModalHeader, key, (_, [{ user, profileType }], ret) => {
+            const { useProfileModal } = settings.useSettingsState();
+            if (!useProfileModal) return ret;
 
-            const { user, profileType } = props;
             if (profileType === 0) return ret;
 
             const channelList = [];
 
             const voiceState = __getLocalVars().users[user.id];
 
-            if (voiceState === {}) return ret;
+            if (!voiceState || isEmpty(voiceState)) return ret;
 
             for (const [_, voice] of Object.entries(voiceState)) {
                 const { channelId } = voice as any;
                 channelList.push(channelId);
             }
 
-            ret.props.children.props.children.props.children.props.children.splice(
-                1,
-                0,
-                <VoiceChannelList channelList={channelList} />
-            );
+            ret.props
+                .children()
+                .props.children.props.children.props.children.splice(
+                    1,
+                    0,
+                    <VoiceChannelList channelList={channelList} />
+                );
         });
-    }
-
-    preLoadSetting() {
-        const useProfileModal = BdApi.getData('vus', 'useProfileModal');
-        const showCategory = BdApi.getData('vus', 'showCategory');
-        settings.useProfileModal = useProfileModal ? useProfileModal : false;
-        settings.showCategory = showCategory ? showCategory : false;
     }
 
     getSettingsPanel() {
         return <SettingsPanel />;
     }
 }
-
-export { settings };
