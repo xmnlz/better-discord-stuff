@@ -76,7 +76,7 @@ export default class UserVoiceShow extends BasePlugin {
             const { useProfileModal } = settings.useSettingsState();
             if (!useProfileModal) return ret;
 
-            if (profileType === 0) return ret;
+            if (profileType !== 'MODAL') return ret;
 
             const channelList = [];
 
@@ -89,10 +89,8 @@ export default class UserVoiceShow extends BasePlugin {
                 channelList.push(channelId);
             }
 
-            ret.props
-                .children()
-                .props.children.props.children.props.children.splice(
-                    1,
+            ret.props.children.props.children.props.children.splice(
+                1,
                     0,
                     <VoiceChannelList channelList={channelList} />
                 );
